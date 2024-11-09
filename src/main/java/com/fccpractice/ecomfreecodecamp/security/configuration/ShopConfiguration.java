@@ -1,4 +1,4 @@
-package com.fccpractice.ecomfreecodecamp.config;
+package com.fccpractice.ecomfreecodecamp.security.configuration;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;

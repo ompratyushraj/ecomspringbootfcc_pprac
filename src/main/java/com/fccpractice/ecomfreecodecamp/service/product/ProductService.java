@@ -2,6 +2,7 @@ package com.fccpractice.ecomfreecodecamp.service.product;
 
 import com.fccpractice.ecomfreecodecamp.dto.ImageDto;
 import com.fccpractice.ecomfreecodecamp.dto.ProductDto;
+import com.fccpractice.ecomfreecodecamp.exceptions.AlreadyExistsException;
 import com.fccpractice.ecomfreecodecamp.exceptions.ResourceNotFoundException;
 import com.fccpractice.ecomfreecodecamp.model.Category;
 import com.fccpractice.ecomfreecodecamp.model.Image;
@@ -33,6 +34,10 @@ public class ProductService implements IProductService {
         // If No, the save it as a new category
         // The set as the new product category.
 
+        if(productExists(request.getName(), request.getBrand())){
+            throw new AlreadyExistsException(request.getBrand() + " " + request.getName() + " product already exists. You may update the product instead !");
+        }
+
         Category category = Optional.ofNullable(categoryRepository.findByName(request.getCategory().getName()))
                 .orElseGet(() -> {
                     Category newCategory = new Category(request.getCategory().getName());
@@ -40,6 +45,10 @@ public class ProductService implements IProductService {
                 });
         request.setCategory(category);
         return productRepository.save(createProduct(request, category));
+    }
+
+    private boolean productExists(String name, String brand) {
+        return productRepository.existsByNameAndBrand(name, brand);
     }
 
     private Product createProduct(AddProductRequest request, Category category) {

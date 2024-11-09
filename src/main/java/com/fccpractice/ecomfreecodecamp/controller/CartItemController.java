@@ -12,7 +12,7 @@ import static org.springframework.http.HttpStatus.*;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("${api.prefix}/cartItems") // Will now resolve ${api.prefix} to /api
+@RequestMapping("${api.prefix}/cartItems")
 public class CartItemController {
 
     private final ICartItemService cartItemService;
