@@ -47,13 +47,14 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
             user.setEmail(defaultEmail);
             user.setPassword(passwordEncoder.encode("123456"));
 
-            // Ensure that the role is managed before associating it
+            // Ensure the Role is managed by fetching it from the DB again
             if (userRole.getId() == 0) {
-                roleRepository.save(userRole); // If the role is detached, save it first
+                roleRepository.save(userRole); // In case it's detached, save it first
             }
-            user.setRoles(Set.of(userRole)); // Set the role to the user
 
-            userRepository.save(user); // Save the user
+            user.setRoles(Set.of(userRole)); // Associate the role with the user
+
+            userRepository.save(user); // Persist the user with the roles
             System.out.println("Default user " + i + " created successfully.");
         }
     }
@@ -76,7 +77,7 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
             user.setLastName("Admin" + i);
             user.setEmail(defaultEmail);
             user.setPassword(passwordEncoder.encode("123456"));
-            user.setRoles(Set.of(adminRole));
+            user.setRoles(Set.of(adminRole)); // Set the admin role
 
             userRepository.save(user); // Save the admin user
             System.out.println("Default admin user " + i + " created successfully.");

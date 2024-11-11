@@ -21,11 +21,10 @@ public class Role {
     private int id;
     private String name;
 
+    @ManyToMany(mappedBy = "roles")
+    private Collection<User> users = new HashSet<>();
+
     public Role(String name) {
         this.name = name;
     }
-
-    // Removed cascade from the @ManyToMany relationship
-    @ManyToMany(mappedBy = "roles")
-    private Collection<User> users = new HashSet<>();
 }
