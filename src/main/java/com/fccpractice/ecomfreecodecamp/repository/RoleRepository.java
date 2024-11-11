@@ -1,4 +1,4 @@
-package com.fccpractice.ecomfreecodecamp.data;
+package com.fccpractice.ecomfreecodecamp.repository;
 
 import com.fccpractice.ecomfreecodecamp.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;

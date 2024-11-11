@@ -2,6 +2,7 @@ package com.fccpractice.ecomfreecodecamp.data;
 
 import com.fccpractice.ecomfreecodecamp.model.Role;
 import com.fccpractice.ecomfreecodecamp.model.User;
+import com.fccpractice.ecomfreecodecamp.repository.RoleRepository;
 import com.fccpractice.ecomfreecodecamp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -26,11 +27,17 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
         createDefaultAdminIfNotExists();
     }
 
-    private void createDefaultUserIfNotExists(){
-        Role userRole = roleRepository.findByName("ROLE_USER").get();
-        for(int i = 1; i<=5; i++){
+    private void createDefaultUserIfNotExists() {
+        Role userRole = roleRepository.findByName("ROLE_USER");
+        if (userRole == null) {
+            // Handle this case if necessary
+            System.out.println("ROLE_USER not found");
+            return; // or throw an exception depending on your logic
+        }
+
+        for (int i = 1; i <= 5; i++) {
             String defaultEmail = "user" + i + "@gmail.com";
-            if(userRepository.existsByEmail(defaultEmail)){
+            if (userRepository.existsByEmail(defaultEmail)) {
                 continue;
             }
             User user = new User();
@@ -40,15 +47,21 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
             user.setPassword(passwordEncoder.encode("123456"));
             user.setRoles(Set.of(userRole));
             userRepository.save(user);
-            System.out.println("Default vet user " + i + " created successfully.");
+            System.out.println("Default user " + i + " created successfully.");
         }
     }
 
-    private void createDefaultAdminIfNotExists(){
-        Role adminRole = roleRepository.findByName("ROLE_ADMIN").get();
-        for(int i = 1; i<=2; i++){
+    private void createDefaultAdminIfNotExists() {
+        Role adminRole = roleRepository.findByName("ROLE_ADMIN");
+        if (adminRole == null) {
+            // Handle this case if necessary
+            System.out.println("ROLE_ADMIN not found");
+            return; // or throw an exception depending on your logic
+        }
+
+        for (int i = 1; i <= 2; i++) {
             String defaultEmail = "admin" + i + "@gmail.com";
-            if(userRepository.existsByEmail(defaultEmail)){
+            if (userRepository.existsByEmail(defaultEmail)) {
                 continue;
             }
             User user = new User();
@@ -62,14 +75,10 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
         }
     }
 
-    private void createDefaultRoleIfNotExists(Set<String> roles){
+    private void createDefaultRoleIfNotExists(Set<String> roles) {
         roles.stream()
-                .filter(role -> roleRepository.findByName(role).isEmpty())
-                .map(Role:: new).forEach(roleRepository::save);
+                .filter(role -> roleRepository.findByName(role) == null)  // Check if role is not found
+                .map(Role::new)  // Create a new Role object if not found
+                .forEach(roleRepository::save);  // Save the new Role to the repository
     }
-
-//    @Override
-//    public boolean supportsAsyncExecution() {
-//        return ApplicationListener.super.supportsAsyncExecution();
-//    }
 }
