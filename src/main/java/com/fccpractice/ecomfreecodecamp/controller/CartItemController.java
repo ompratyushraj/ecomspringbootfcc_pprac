@@ -7,6 +7,7 @@ import com.fccpractice.ecomfreecodecamp.response.ApiResponse;
 import com.fccpractice.ecomfreecodecamp.service.cart.ICartItemService;
 import com.fccpractice.ecomfreecodecamp.service.cart.ICartService;
 import com.fccpractice.ecomfreecodecamp.service.user.IUserService;
+import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,8 +40,8 @@ public class CartItemController {
             return ResponseEntity.ok(new ApiResponse("Add Item Success", null));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
-        } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse("Unexpected Error: " + e.getMessage(), null));
+        } catch (JwtException e) {
+            return ResponseEntity.status(UNAUTHORIZED).body(new ApiResponse(e.getMessage(), null));
         }
     }
 
