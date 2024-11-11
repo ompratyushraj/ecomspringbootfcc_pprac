@@ -45,7 +45,11 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
             user.setLastName("User" + i);
             user.setEmail(defaultEmail);
             user.setPassword(passwordEncoder.encode("123456"));
-            user.setRoles(Set.of(userRole));
+//            user.setRoles(Set.of(userRole));
+            if (userRole.getId() == 0) {
+                roleRepository.save(userRole); // If the role is detached, save it first
+            }
+            user.setRoles(Set.of(userRole)); // Set the role to the user
             userRepository.save(user);
             System.out.println("Default user " + i + " created successfully.");
         }

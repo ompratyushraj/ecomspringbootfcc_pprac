@@ -25,7 +25,12 @@ public class Role {
         this.name = name;
     }
 
-    @ManyToMany(mappedBy = "roles")
-    private Collection<User> users = new HashSet<>();
+//    @ManyToMany(mappedBy = "roles")
+//    private Collection<User> users = new HashSet<>();
+//    @ManyToMany(cascade = CascadeType.ALL)
+//    private Collection<Role> roles;
+// Removed cascade from the @ManyToMany relationship
+    @ManyToMany
+    private Collection<Role> roles;
 
 }
