@@ -1,5 +1,6 @@
 package com.fccpractice.ecomfreecodecamp.controller;
 
+import com.fccpractice.ecomfreecodecamp.model.User;
 import com.fccpractice.ecomfreecodecamp.request.LoginRequest;
 import com.fccpractice.ecomfreecodecamp.response.ApiResponse;
 import com.fccpractice.ecomfreecodecamp.response.JwtResponse;
@@ -31,7 +32,7 @@ public class AuthController {
                     .authenticate(new UsernamePasswordAuthenticationToken(
                             request.getEmail(), request.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            String jwt = jwtUtils.generateTokenForUser(authentication);
+            String jwt = jwtUtils.generateTokenForUser((User) authentication);
             ShopUserDetails userDetails = (ShopUserDetails) authentication.getPrincipal();
             JwtResponse jwtResponse = new JwtResponse(userDetails.getId(), jwt);
             return ResponseEntity.ok(new ApiResponse("Login Successful", jwtResponse));

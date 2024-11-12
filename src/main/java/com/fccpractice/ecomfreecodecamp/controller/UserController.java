@@ -8,6 +8,7 @@ import com.fccpractice.ecomfreecodecamp.request.UserUpdateRequest;
 import com.fccpractice.ecomfreecodecamp.response.ApiResponse;
 import com.fccpractice.ecomfreecodecamp.service.user.IUserService;
 import com.fccpractice.ecomfreecodecamp.model.User;
+import com.fccpractice.ecomfreecodecamp.security.jwt.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @RequestMapping("${api.prefix}/users")
 public class UserController {
     private final IUserService userService;
+    private final JwtUtils jwtUtils; // Inject JwtUtils
 
     @GetMapping("/{userId}/user")
     public ResponseEntity<ApiResponse> getUserById(@PathVariable Long userId) {
@@ -37,11 +39,17 @@ public class UserController {
         try {
             User user = userService.createUser(request);
             UserDto userDto = userService.convertUserToDto(user);
-            return ResponseEntity.ok(new ApiResponse("Create User Success!", userDto));
+
+            // Generate token after user creation
+            String token = jwtUtils.generateTokenForUser(user);
+
+            // Return token along with user data in the response
+            return ResponseEntity.ok(new ApiResponse("Create User Success!", token));
         } catch (AlreadyExistsException e) {
             return ResponseEntity.status(CONFLICT).body(new ApiResponse(e.getMessage(), null));
         }
     }
+
     @PutMapping("/{userId}/update")
     public ResponseEntity<ApiResponse> updateUser(@RequestBody UserUpdateRequest request, @PathVariable Long userId) {
         try {
@@ -52,6 +60,7 @@ public class UserController {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
         }
     }
+
     @DeleteMapping("/{userId}/delete")
     public ResponseEntity<ApiResponse> deleteUser(@PathVariable Long userId) {
         try {

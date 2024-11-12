@@ -1,13 +1,11 @@
 package com.fccpractice.ecomfreecodecamp.security.jwt;
 
+import com.fccpractice.ecomfreecodecamp.model.User;
 import com.fccpractice.ecomfreecodecamp.security.user.ShopUserDetails;
-
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
@@ -24,20 +22,24 @@ public class JwtUtils {
     @Value("${auth.token.expirationInMils}")
     private int expirationTime;
 
-    public String generateTokenForUser(Authentication authentication) {
-        ShopUserDetails userPrincipal = (ShopUserDetails) authentication.getPrincipal();
+    // Generate token after user registration
+    public String generateTokenForUser(User user) {
+        // Convert the User to ShopUserDetails
+        ShopUserDetails userPrincipal = ShopUserDetails.buildUserDetails(user);
 
+        // Extract roles from the user
         List<String> roles = userPrincipal.getAuthorities()
                 .stream()
                 .map(GrantedAuthority::getAuthority)
                 .toList();
 
+        // Generate the JWT token
         return Jwts.builder()
                 .setSubject(userPrincipal.getEmail())
                 .claim("id", userPrincipal.getId())
                 .claim("roles", roles)
-                .setIssuedAt(new Date()) // Fixed the method
-                .setExpiration(new Date(System.currentTimeMillis() + expirationTime)) // Fixed the method
+                .setIssuedAt(new Date()) // Issue time
+                .setExpiration(new Date(System.currentTimeMillis() + expirationTime)) // Expiration time
                 .signWith(key(), SignatureAlgorithm.HS256)
                 .compact();
     }
