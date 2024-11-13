@@ -2,43 +2,38 @@ package com.fccpractice.ecomfreecodecamp.security.user;
 
 import com.fccpractice.ecomfreecodecamp.model.Role;
 import com.fccpractice.ecomfreecodecamp.model.User;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.util.Arrays.stream;
-
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public class ShopUserDetails implements UserDetails {
-    private Long id;
-    private String email;
-    private String password;
 
-    private Collection<GrantedAuthority> authorities;
+    private final User user; // The User object
+    private final Collection<? extends GrantedAuthority> authorities;
 
-    public static ShopUserDetails buildUserDetails(User user){
-        List<GrantedAuthority> authorities = user.getRoles()
-                .stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName()))
+    // Constructor to initialize the user and authorities
+    public ShopUserDetails(User user, Collection<? extends GrantedAuthority> authorities) {
+        this.user = user;
+        this.authorities = authorities;
+    }
+
+    // Static method to create ShopUserDetails from a User entity
+    public static ShopUserDetails buildUserDetails(User user) {
+        // Convert roles into GrantedAuthorities
+        Collection<GrantedAuthority> authorities = user.getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority(role.getName())) // Convert Role to GrantedAuthority
                 .collect(Collectors.toList());
 
-        return new ShopUserDetails(
-                user.getId(),
-                user.getEmail(),
-                user.getPassword(),
-                authorities
-        );
+        // Return new ShopUserDetails instance with the converted authorities
+        return new ShopUserDetails(user, authorities);
+    }
+
+    // Expose the User object through this method
+    public User getUser() {
+        return user;
     }
 
     @Override
@@ -48,31 +43,39 @@ public class ShopUserDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return password;
+        return user.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return email;
+        return user.getEmail();
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return UserDetails.super.isAccountNonExpired();
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return UserDetails.super.isAccountNonLocked();
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return UserDetails.super.isCredentialsNonExpired();
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return UserDetails.super.isEnabled();
+        return true;
+    }
+
+    public Long getId() {
+        return user.getId(); // Return the user's ID
+    }
+
+    public String getEmail() {
+        return user.getEmail();
     }
 }

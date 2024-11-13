@@ -22,28 +22,35 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("${api.prefix}/auth")
+@RequestMapping("/api/v1/auth")
 public class AuthController {
-
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
 
-    // Ensure to add @PostMapping to this method
     @PostMapping("/login")
     public ResponseEntity<ApiResponse> login(@Valid @RequestBody LoginRequest request) {
         try {
+            // Authenticate the user
             Authentication authentication = authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(
                             request.getEmail(), request.getPassword()));
+
+            // Set the authentication context
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            // Generate JWT token
-            String jwt = jwtUtils.generateTokenForUser((User) authentication.getPrincipal());
-
+            // Extract ShopUserDetails from authentication
             ShopUserDetails userDetails = (ShopUserDetails) authentication.getPrincipal();
-            JwtResponse jwtResponse = new JwtResponse(userDetails.getId(), jwt);
-            return ResponseEntity.ok(new ApiResponse("Login Successful", jwtResponse));
 
+            // Get the User from ShopUserDetails (this is where we fix the casting issue)
+            User user = userDetails.getUser(); // Get the User object from ShopUserDetails
+
+            // Generate the JWT token using the User object
+            String jwt = jwtUtils.generateTokenForUser(user);
+
+            // Create JwtResponse
+            JwtResponse jwtResponse = new JwtResponse(userDetails.getId(), jwt);
+
+            return ResponseEntity.ok(new ApiResponse("Login Successful", jwtResponse));
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse(e.getMessage(), null));
         }
