@@ -1,29 +1,23 @@
-E-commerce Backend with JWT Authentication and Image File Handling
+The steps to clone, build, and run a Spring Boot project from the terminal using Maven and Java.
 
-Description: Developed a robust backend for an e-commerce application using Spring Boot. The system includes features like user authentication, product management, order processing, and image file upload                       functionalities, leveraging industry-standard tools for scalability and security.
+Commands to Run the Project:
+bash
 
-Authentication & Authorization: Implemented JWT (JSON Web Tokens) for secure user authentication and authorization, ensuring robust user session management.
+# 1. Clone the Git repository to your local machine
+git clone https://github.com/ompratyushraj/ecomspringbootfcc_pprac/tree/main
 
-API Development: Designed and developed RESTful APIs for various e-commerce functionalities, including user registration, login, product catalog management, shopping cart, and order processing.
+# 2. Navigate into the project directory
+cd ecomspringbootfcc_pprac
 
-Image File Handling: Integrated API endpoints for managing product image uploads using multipart file handling, enabling users to upload and update product images securely.
+# 3. Clean and build the project using Maven
+mvn clean install
 
-Database: Utilized MySQL as the relational database for storing product details, user information, order data, and transaction histories, ensuring efficient querying and data integrity.
+# 4. Navigate to the target directory where the JAR file is located
+cd target
 
-Backend Framework: Used Spring Boot for rapid application development and deployment, ensuring a scalable and maintainable backend system with clean and modular architecture.
-
-ORM: Employed Spring Data JPA for seamless database interactions and optimized queries.
-
-Security: Configured security features using Spring Security, protecting endpoints and sensitive data.
-
-Deployment & Testing: Deployed the application on local servers (or specify any cloud platform if applicable) and conducted thorough testing using JUnit and Postman.
-
-Tech Stack:
-
-Backend Framework: Spring Boot
-Authentication: JWT (JSON Web Token)
-Database: MySQL
-ORM: Spring Data JPA
-Security: Spring Security
-File Handling: Multipart File Upload
-Testing: JUnit, Postman (for API testing)
+# 5. Run the Spring Boot application using the generated JAR file
+java -jar your-app-name.jar
+What You Need:
+Git: To clone the repository.
+Maven: To build the project (mvn clean install).
+Java: To run the JAR file (java -jar).
