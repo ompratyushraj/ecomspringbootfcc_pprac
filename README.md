@@ -37,6 +37,9 @@ That's here some of the API's tests:
 All other API's are working fine, if you want to go further just, clone it and test them / : ) .
 Thank's.
 
+<img width="1497" height="816" alt="image" src="https://github.com/user-attachments/assets/089a9459-26b1-49ce-be70-a610b4bc0a26" />
+
+
    
 
    
